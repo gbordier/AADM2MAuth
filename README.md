@@ -4,6 +4,10 @@ the full documentation for this pattern is located at []
 
 The goal for this is to demonstrate how easy it is to authenticate a "Client" daemon/headless application (non-interactive) managed by a client organization into a "Server" API application that is managed in another Organization / Azure AD Tenant.
 
+This demoe has 2 parts
+- the Powershell scripts that prepare and tests everything
+- the mini python flask-based web app (in validate_token_python) to demonstrate it actually works
+
 ## Demo pre-requisistes
 
 
@@ -12,6 +16,7 @@ The goal for this is to demonstrate how easy it is to authenticate a "Client" da
   - for some obscure reason the AzureAD PSH module does not work on powershell core, I'll add a branch to use Microsoft.Graph for PSH Core psh plugin whenever the cmdlet stabilize out of Beta
 - I have added my own JWT decoding module to show the output of the Access Token in the Modules folder
 
+if no config file is provided, one will be created for you.
 
 ## Steps
 
@@ -42,7 +47,23 @@ The goal for this is to demonstrate how easy it is to authenticate a "Client" da
     - including assigned roles for the client app
 
 
+## the Python App
+
 the ./validate_token_python folder is a flask based web app that can be loaded into an azure web app and can validate the token.
+
+
+what it actually does :
+- the Python app reads its own config.json file that has been created by the above script to retrive Application and tenant IDs for the expected tokens
+- then it wait for an Authorization header when called via the /hello REST API
+- the app extract the access token that is part of the Bearer authorization header
+- then is checks:
+    - the token has been signed by Azure AD
+    - the token hsa the server tenant ID in the idp claim
+    - the token has the server app ID in the audience (aud) claim
+    - the token has the client app ID in the appid (appid) claim
+    - the token has the expected Application role in the roles claim
+    - the token has the appcr claim which indicate a certificate has been used to request the token.
+
 
 It can be run from WSL or Windows  using run_local.sh or in an Azure Web App.
 if ran locally, you can use ".\5-Test-Auth-python.ps1" to test local authentication.

@@ -44,10 +44,6 @@ class InvalidAuthorizationToken(Exception):
 
 
 def validate_jwt_token(token):
-    #app = PublicClientApplication(CLIENT_ID)
-
-#    azure_ad_issuer = 'https://sts.windows.net/'+TENANT_ID  + '/'
-    ## https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/'
 
     azure_ad_jwks_uri='https://login.microsoftonline.com/'+TENANT_ID +'/discovery/keys?appid='+ CLIENT_ID
     
