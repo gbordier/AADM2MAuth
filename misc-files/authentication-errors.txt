@@ -1,0 +1,36 @@
+## request token when SP does not exist on target tenant
+
+Get-MsalToken: AADSTS700016: Application with identifier '824fa74a-f2de-4f9c-90d6-07c7b76dd29e' was not found in the directory 'New Pft'. This can happen if the application has not been installed by the administrator of the tenant or consented to by any user in the tenant. You may have sent your authe
+
+
+
+AADSTS7000229: The client application 824fa74a-f2de-4f9c-90d6-07c7b76dd29e is missing service principal in the tenant d1d92357-0fd1-4f9d-853e-a2bf3d687614
+
+New-MgBetaServicePrincipal -AppId $client_appid
+
+$clientsp=get-MgBetaServicePrincipal -Filter "AppId eq '$client_appid'"
+
+(decode-jwt -token_type access_token -token (Get-MsalToken  -ForceRefresh -ClientId $client_appid -Scopes "$($serverapp.AppId)/.default" -TenantId  new.pft.ovh  -ClientCertificate $cert ).AccessToken).payload
+
+## require app role assignemnt to be used :
+update-MgBetaServicePrincipal -ServicePrincipalId $serversp.Id -AppRoleAssignmentRequired
+
+ AADSTS501051: Application '824fa74a-f2de-4f9c-90d6-07c7b76dd29e'(App1) is not assigned to a role for the application '8db83c99-524f-4036-8db7-4ea3d5101f25'(Server App).
+
+
+(Get-MgBetaServicePrincipal -ServicePrincipalId $serversp.Id -ExpandProperty AppRoleAssignedTo ).AppRoleAssignedTo
+
+## assign an approle to the client service principal (all ID references AAD service principals objectIDs - AzureAD PSH plugin uses ObjectID, MicrosoftGraph psh  uses Id )
+
+New-MgBetaServicePrincipalAppRoleAssignment -servicePrincipalId $clientsp.Id -AppRoleId $serverapp.AppRoles[0].Id -ResourceId $serversp.Id   -PrincipalId $clientsp.Id
+
+
+
+## if the client app is not set a multi-tenant:
+New-MgBetaServicePrincipal -AppId $client_appid
+
+New-MgBetaServicePrincipal_CreateExpanded: The appId '824fa74a-f2de-4f9c-90d6-07c7b76dd29e' of the service principal does not reference a valid application object
+
+
+
+set-AzureADApplication -ObjectId $clientapp.ObjectId  -AvailableToOtherTenants

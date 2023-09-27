@@ -1,0 +1,11 @@
+
+Flask
+Flask-RESTful
+azure-ad-verify-token
+asn1crypto==0.24.0
+##cffi==1.11.5
+cryptography>41.0.0
+idna==2.7
+pycparser
+PyJWT
+six==1.11.0

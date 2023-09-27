@@ -1,0 +1,116 @@
+$app=New-Azureadapplication -displayname $app.Name  
+
+
+$app=New-AzureADApplication -DisplayName "App1"   
+$sp=Get-AzureADServicePrincipal -Filter "AppId eq '$($clientapp.AppId)'"
+
+$clientapppassword=New-AzureADApplicationPasswordCredential -ObjectId $clientapp.ObjectId
+
+##$k=New-AzureADApplicationKeyCredential -ObjectId $app.ObjectId -EndDate (get-date).AddYears(1) -Type Symmetric
+
+$clientsp=New-AzureADServicePrincipal -AppId $clientapp.AppId
+$serversp=New-AzureADServicePrincipal -AppId $serverapp.AppId
+
+
+## Create a role definition for server App
+$role=[Microsoft.Open.AzureAD.Model.AppRole ] @{"AllowedMemberTypes"= "Application";"Description"="Dumuy role for app "; "DisplayName"="AppRole2"; "id"=New-Guid ;"Value"="AppRole2.SubRole1"}
+($serverapp.AppRoles).Add($role)
+Set-AzureADApplication -ObjectId $serverapp.ObjectId -AppRoles $serverapp.AppRoles
+
+
+Get-MsalToken -ClientSecret $pass -ClientId $clientapp.AppId -TenantId new.pft.ovh  -Scopes "$($serverapp.AppId)/.default"
+
+$token=(Get-MsalToken -ClientSecret $pass -ClientId $clientapp.AppId -TenantId new.pft.ovh  -Scopes "$($serverapp.AppId)/.default" ).AccessToken
+
+
+(Decode-JWT -token $token -token_type access_token).payload
+<#
+aud      : 8db83c99-524f-4036-8db7-4ea3d5101f25  ==> server  App ID
+iss      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+iat      : 9/11/2023 2:48:56 PM
+nbf      : 9/11/2023 2:48:56 PM
+exp      : 9/11/2023 3:53:56 PM
+aio      : E2FgYLgYHZinyWmzmNsr9d4epZOPAQ==
+appid    : 998a7b0c-903c-4412-8e01-0d997ca7bded ==> client App ID
+appidacr : 1
+idp      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+oid      : 20a0e093-c64b-45d9-87b7-fd4c0ff472c6
+rh       : 0.AUYAVyPZ0dEPnU-FPqK_PWh2FJk8uI1PUjZAjbdOo9UQHyWAAAA.
+roles    : {MyAppRole1Permission}
+sub      : 20a0e093-c64b-45d9-87b7-fd4c0ff472c6
+tid      : d1d92357-0fd1-4f9d-853e-a2bf3d687614
+uti      : 0ZKKuJVCp0Oe1_LXD0k-AA
+ver      : 1.0
+
+#>
+
+
+
+##multi tenant
+<#
+PS C:\Users\gbordier> (decode-jwt -token_type access_token -token $tokensource.AccessToken).payload
+
+Token from Source tenant (where the client app is registered)
+
+aud      : 8db83c99-524f-4036-8db7-4ea3d5101f25
+iss      : https://sts.windows.net/4ba28e96-6fb2-4d67-b2ab-193a55ea197a/
+iat      : 9/11/2023 6:42:22 PM
+nbf      : 9/11/2023 6:42:22 PM
+exp      : 9/11/2023 7:47:22 PM
+aio      : E2FgYOhZ/+Q9A7dV3dYtel4XZrIZAAA=
+appid    : 824fa74a-f2de-4f9c-90d6-07c7b76dd29e
+appidacr : 1
+idp      : https://sts.windows.net/4ba28e96-6fb2-4d67-b2ab-193a55ea197a/
+oid      : fa46d2f1-6e69-4cf3-b6b4-5cddbdf90776 => client app object id in source tenant
+rh       : 0.ASAAlo6iS7JvZ02yqxk6VeoZepk8uI1PUjZAjbdOo9UQHyXkAAA.
+roles    : {AppRole2.SubRole1}
+sub      : fa46d2f1-6e69-4cf3-b6b4-5cddbdf90776 => client app object id in source tenant
+tid      : 4ba28e96-6fb2-4d67-b2ab-193a55ea197a
+uti      : KK4sxkSgY0Wc-pLhq20aAA
+ver      : 1.0
+
+
+
+PS C:\Users\gbordier> (decode-jwt -token_type access_token -token $tokentarget.AccessToken).payload
+<#
+
+Token from Target Tenant (where the server app is registered)
+
+aud      : 8db83c99-524f-4036-8db7-4ea3d5101f25
+iss      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+iat      : 9/11/2023 6:42:36 PM
+nbf      : 9/11/2023 6:42:36 PM
+exp      : 9/11/2023 7:47:36 PM
+aio      : E2FgYFjDPVVJ7qHolpLGBYy33l75CQA=
+appid    : 824fa74a-f2de-4f9c-90d6-07c7b76dd29e
+appidacr : 1
+idp      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+oid      : c9e25e01-6f1f-480e-ba91-1862a11bcc3a ==> client app object ID in target tenant
+rh       : 0.AUYAVyPZ0dEPnU-FPqK_PWh2FJk8uI1PUjZAjbdOo9UQHyWAAAA.
+sub      : c9e25e01-6f1f-480e-ba91-1862a11bcc3a ==> client app object ID in target tenant
+tid      : d1d92357-0fd1-4f9d-853e-a2bf3d687614
+uti      : wfERb-6EKUe5OyO6q02zAA
+ver      : 1.0
+
+##>
+
+select-tenant target
+Set-AzureADApplication -ObjectId $serverapp.ObjectId -AvailableToOtherTenants $true
+
+select-tenant source
+New-AzureADServicePrincipal -AppId $serverapp.AppId
+
+select-tenant source
+
+select-tenant source
+  
+  24 $clientapp
+  25 select-tenant target
+  26 select-tenant source
+  27 Get-AzureADApplication $clientapp
+  
+$clientapp=Get-AzureADApplication -SearchString app1
+Remove-AzureADApplicationPasswordCredential -ObjectId $clientapp.ObjectId -KeyId ($clientapp.PasswordCredentials[0].KeyId)
+$k=New-AzureADApplicationPasswordCredential -ObjectId $clientapp.ObjectId 
+$token=Get-MsalToken -ClientId $clientapp.AppId -ClientSecret (ConvertTo-SecureString -AsPlainText -Force $k.Value) -Scopes "$($serverapp.AppId)/.default"  -TenantId new.pft.ovh
+

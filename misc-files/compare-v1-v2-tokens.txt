@@ -1,0 +1,35 @@
+aud      : 8db83c99-524f-4036-8db7-4ea3d5101f25
+iss      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+iat      : 9/13/2023 9:36:04 PM
+nbf      : 9/13/2023 9:36:04 PM
+exp      : 9/13/2023 10:41:04 PM
+aio      : E2FgYNjL2XLo+eOu8MmiFy0qja/1AQA=
+appid    : 824fa74a-f2de-4f9c-90d6-07c7b76dd29e
+appidacr : 1
+idp      : https://sts.windows.net/d1d92357-0fd1-4f9d-853e-a2bf3d687614/
+idtyp    : app
+oid      : c9e25e01-6f1f-480e-ba91-1862a11bcc3a
+rh       : 0.AUYAVyPZ0dEPnU-FPqK_PWh2FJk8uI1PUjZAjbdOo9UQHyWAAAA.
+roles    : {AppRole2}
+sub      : c9e25e01-6f1f-480e-ba91-1862a11bcc3a
+tid      : d1d92357-0fd1-4f9d-853e-a2bf3d687614
+uti      : 3kIzuivhhEilP_J8QSw9AA
+ver      : 1.0
+
+
+aud    : 8db83c99-524f-4036-8db7-4ea3d5101f25
+iss    : https://login.microsoftonline.com/d1d92357-0fd1-4f9d-853e-a2bf3d687614/v2.0
+iat    : 13/09/2023 9:42:39 pm
+nbf    : 13/09/2023 9:42:39 pm
+exp    : 13/09/2023 10:47:39 pm
+aio    : ASQA2/8UAAAAbHK0pDO2oM/9jIrYUGLwfu9MAFXAr8uzk5HYnt5HjTM=
+azp    : 824fa74a-f2de-4f9c-90d6-07c7b76dd29e
+azpacr : 1
+idtyp  : app
+oid    : c9e25e01-6f1f-480e-ba91-1862a11bcc3a
+rh     : 0.AUYAVyPZ0dEPnU-FPqK_PWh2FJk8uI1PUjZAjbdOo9UQHyWAAAA.
+roles  : {AppRole2}
+sub    : c9e25e01-6f1f-480e-ba91-1862a11bcc3a
+tid    : d1d92357-0fd1-4f9d-853e-a2bf3d687614
+uti    : hc1wWWsGwEiN6t_Zo2pGAA
+ver    : 2.0

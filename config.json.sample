@@ -1,0 +1,57 @@
+{
+    "Tenants":  [
+                    {
+                        "Name":  "Server",
+                        "CredentialType":  "AccessToken",
+                        "TenantId":  "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+                        "TenantDomain":  "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+                        "AccountId":  "xxxx",
+                        "AccessToken":  ""
+                    },
+                    {
+                        "Name":  "Client",
+                        "CredentialType":  "AccessToken",
+                        "TenantId":  "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+                        "TenantDomain":  "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+                        "AccountId":  "xxxx",
+                        "AccessToken":  ""
+                    }
+                ],
+    "Apps":  [
+                 {
+                     "CredentialType":  "Password",
+                     "Name":  "AAdXTenantAuth-ClientPwd",
+                     "Tenant":  "Client",
+                     "AppId":  "d8fd2d3a-aa53-4ab1-b747-22b73e85bd3c",
+                     "ObjectId":  "7f7fc822-6377-4550-8821-e8363491e90c",
+                     "TenantId":  "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+                     "App":  null,
+                     "KeyId":  null,
+                     "KeyValue":  "some encrypted password",
+                     "CertificateThumbprint":  null,
+                     "TargetSPObjectId":  "3bc9f48d-e370-470c-94c7-46d0ca949f72"
+                 },
+                 {
+                     "CredentialType":  "Certificate",
+                     "Name":  "AAdXTenantAuth-ClientCert",
+                     "Tenant":  "Client",
+                     "AppId":  "3b1345e4-156c-4932-84c9-e4fe6c3716dc",
+                     "ObjectId":  "3536293c-7133-40e2-bc8f-511a3a730220",
+                     "TenantId":  "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+                     "App":  null,
+                     "KeyId":  "57b9c464-cc8a-4d0f-a85e-e0d71f8bcbc0",
+                     "KeyValue":  null,
+                     "CertificateThumbprint":  "DA6086BC883DACC3A23B3DF50515168A1F540503",
+                     "TargetSPObjectId":  "d049573f-e8a6-4eba-9927-4fcb620af23b"
+                 },
+                 {
+                     "Name":  "AAdXTenantAuth-Server",
+                     "Tenant":  "Server",
+                     "AppId":  "1ab39cb0-25b5-4c3c-bfff-12b7b039a7ca",
+                     "ObjectId":  "efffa692-b9bc-4d52-92af-0e8ef42b1aee",
+                     "TenantId":  "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+                     "App":  null,
+                     "TargetSPObjectId":  "392b5f93-ef50-403a-a96d-41cbc8c375d4"
+                 }
+             ]
+}
