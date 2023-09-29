@@ -39,7 +39,7 @@ if no config file is provided, one will be created for you.
     - make sure the server service principal does not allow access if a client has not been granted a role
     - Assign both Client applications service principal to an application role for the server application service principal
 
-4. 4-Test-Auth.ps1 will leverage MSAL.PS module to retrive tokens 
+4. 4-Test-Auth.ps1 will leverage MSAL.PS module to retrieve tokens 
     - using the credential from the Client AAD Tenant
     - signed with the target AAD tenant
     - tagged with the client AppID
@@ -53,16 +53,17 @@ the ./validate_token_python folder is a flask based web app that can be loaded i
 
 
 what it actually does :
+
 - the Python app reads its own config.json file that has been created by the above script to retrive Application and tenant IDs for the expected tokens
 - then it wait for an Authorization header when called via the /hello REST API
 - the app extract the access token that is part of the Bearer authorization header
 - then is checks:
-    - the token has been signed by Azure AD
-    - the token hsa the server tenant ID in the idp claim
-    - the token has the server app ID in the audience (aud) claim
-    - the token has the client app ID in the appid (appid) claim
-    - the token has the expected Application role in the roles claim
-    - the token has the appcr claim which indicate a certificate has been used to request the token.
+  - the token has been signed by Azure AD
+  - the token hsa the server tenant ID in the idp claim
+  - the token has the server app ID in the audience (aud) claim
+  - the token has the client app ID in the appid (appid) claim
+  - the token has the expected Application role in the roles claim
+  - the token has the appcr claim which indicate a certificate has been used to request the token.
 
 
 It can be run from WSL or Windows  using run_local.sh or in an Azure Web App.

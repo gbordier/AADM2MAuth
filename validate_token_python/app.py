@@ -1,10 +1,9 @@
 
 from flask import Flask, jsonify, request
-##from msal import *
+
 import json 
 from azure_ad_verify_token import verify_jwt
 
-##from jwksutils import rsa_pem_from_jwk
 
 # To run this example, follow the instructions in the project README
 
@@ -87,8 +86,12 @@ issuer  = 'https://sts.windows.net/'+TENANT_ID+ '/'
 @app.route('/hello', methods=['GET'])
 def helloworld():
     if(request.method == 'GET'):
-        token = request.headers.get('Authorization').split(" ")[1]
-        data = {"API": "Hello World"}
+        if ('Authorization' in request.headers):
+            token = request.headers.get('Authorization').split(" ")[1]
+            data = {"API": "Hello World"}
+        else:
+            data = {"API": "Hello World", "status": "no Authentication please provide a Bearer token in the authorization header"}
+            return jsonify(data)
         
         if (token):
 #            data['auth'] =token
@@ -111,5 +114,5 @@ def helloworld():
         return jsonify(data)
   
   
-if __name__ == '__main__':
-    app.run(debug=True)
+#if __name__ == '__main__':
+#    app.run(debug=True)
