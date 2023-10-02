@@ -62,9 +62,7 @@ function select-ADtenant($tenantname)
 	write-host "looking for tenant $tenantname"
     $conf.Tenants|?{$_.Name -eq $tenantname} |%{
         $tenant=$_
-
-
-	write-host "connecting to tenant $($tenant.tenantid)"
+	    write-host "connecting to tenant $($tenant.tenantid)"
         while (!$tenant.TenantId) {
             $tenant | Add-Member -NotePropertyName TenantId   -NotePropertyValue (read-host "please enter the tenant id for $($tenant.Name)") -ErrorAction SilentlyContinue 
             
@@ -80,7 +78,7 @@ function select-ADtenant($tenantname)
                   $tenant  | Add-Member -NotePropertyName $_   -NotePropertyValue $null  -ErrorAction SilentlyContinue 
 		}
 		try {
-	    get-azureadtenantdetail -erroraction silentlycontinue | out-null
+	        get-azureadtenantdetail -erroraction silentlycontinue | out-null
 		}
         catch {
                 write-host "bad token"
@@ -88,20 +86,17 @@ function select-ADtenant($tenantname)
                 $tenant.accesstoken=$null
         }
 	    
-            if ($aadconn)
-            {
+        if ($aadconn)
+        {
 
-                  $tenant.tenantid = $aadconn.tenantid
-                  $tenant.tenantdomain = $aadconn.tenantdomain
-		  $tenant.accountid =  $aadconn.account.id
-                  $tenant.AccessToken = encrypttoken (([Microsoft.Open.Azure.AD.CommonLibrary.AzureSession]::AccessTokens.Values[0].AccessToken))
-                  $conf | convertto-json | set-content $fullconfpath
-                
-            }
+            $tenant.tenantid = $aadconn.tenantid
+            $tenant.tenantdomain = $aadconn.tenantdomain
+            $tenant.accountid =  $aadconn.account.id
+            $tenant.AccessToken = encrypttoken (([Microsoft.Open.Azure.AD.CommonLibrary.AzureSession]::AccessTokens.Values[0].AccessToken))
+            $conf | convertto-json | set-content $fullconfpath
+            
+        }
 
-        
-
-        
     }
 
 }

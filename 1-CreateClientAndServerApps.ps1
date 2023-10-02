@@ -5,7 +5,7 @@ $currentpath=[System.IO.Path]::GetDirectoryName($script:myinvocation.MyCommand.D
 . $currentpath\0-vars.ps1
 
 
-function retrieveorcreateapp($appdef) {
+function retrieveorcreateapp($appdef,[switch]$multiTenant) {
     if ($appdef.AppId) {
         $app=Get-AzureADApplication -Filter "AppId eq '$($appdef.AppId)'"    
     
@@ -16,7 +16,7 @@ function retrieveorcreateapp($appdef) {
     
         }
         else {
-            $app=New-AzureADApplication -DisplayName $appdef.Name   -AvailableToOtherTenants $true
+            $app=New-AzureADApplication -DisplayName $appdef.Name   -AvailableToOtherTenants ([book] $multiTenant)
     
         }
 }
@@ -65,9 +65,9 @@ function CreateSecret($app) {
             }
 	        write-host "cert created with thumbprint $($cert.thumbprint)"
         }
-	else { write-host "found existing cert "}
-
-        $secret=New-AzureADApplicationKeyCredential -ObjectId $app.ObjectId -CustomKeyIdentifier $app.Name -Type AsymmetricX509Cert -Usage Verify -Value ([System.Convert]::ToBase64String( $cert.RawData)) -EndDate ($cert.NotAfter)
+	    else { write-host "found existing cert "}
+        ## upload certificate and set customkeyid as the certificate thumbprint
+        $secret=New-AzureADApplicationKeyCredential -ObjectId $app.ObjectId -CustomKeyIdentifier ( [System.Convert]::ToBase64String( $cert.GetCertHash())) -Type AsymmetricX509Cert -Usage Verify -Value ([System.Convert]::ToBase64String( $cert.RawData)) -EndDate ($cert.NotAfter)
         if ($secret) {
             $app.CertificateThumbprint = $cert.Thumbprint
             $app.KeyId = $secret.KeyId
@@ -133,7 +133,7 @@ select-adtenant Client
 $conf.Apps|?{$_.Tenant -eq "Client"} |%{
     $clientappdef=$_
     write-host "creating or retrieving application $($clientappdef.Name) from Source tenant $((Get-AzureADTenantDetail).ObjectId)"
-    $clientapp = retrieveorcreateapp -Appdef $clientappdef
+    $clientapp = retrieveorcreateapp -Appdef $clientappdef -multiTenant
     if ($clientapp) {
         CreateSecret -app $clientappdef | out-null
     }
