@@ -1,0 +1,23 @@
+{
+    "image" : "mcr.microsoft.com/devcontainers/python:3.10",
+
+         "customizations": {
+            "vscode": {
+                "settings": {
+                    "go.toolsManagement.checkForUpdates": "local"
+                },
+                "extensions": [
+                        "GitHub.vscode-pull-request-github",
+                        "ms-python.python",
+                        "ms-python.vscode-pylance",
+                        "ms-toolsai.jupyter"
+
+                    ]
+
+            }
+        },
+        "workspaceMount": "source=${localWorkspaceFolder}/validate_token_python,target=/workspace,type=bind,consistency=cached", 
+        "workspaceFolder": "/workspace",
+        "onCreateCommand": "pip install -r ./requirements.txt"
+
+}
