@@ -280,11 +280,11 @@ function ListCertificatesFromStore()
     return $certs
 }
 
-function GetCertificateFromStoreOrCreateSelfSigned($Subject)
+function GetCertificateFromStoreOrCreateSelfSigned($Name)
 {
-    $cert=GetCertificateFromStore -Name $Subject
+    $cert=GetCertificateFromStore -Name $Name
     if (!$cert) {
-        $cert=CreateSelfSignedCertificate -subject $Subject 
+        $cert=CreateSelfSignedCertificate -subject $Name
     }
     return $cert
 }
