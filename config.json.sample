@@ -1,58 +1,34 @@
 {
-    "Tenants":  [
-                    {
-                        "Name":  "Server",
-                        "CredentialType":  "AccessToken",
-                        "TenantId":  "d1d92357-0fd1-FFFF-FFFF-a2bf3d687614",
-                        "TenantDomain":  "d1d92357-FFFF-FFFF-853e-a2bf3d687614",
-                        "AccountId":  "xxxx",
-                        "AccessToken":  ""
-                    },
-                    {
-                        "Name":  "Client",
-                        "CredentialType":  "AccessToken",
-                        "TenantId":  "4ba28e96-6fb2-FFFF-FFFF-193a55ea197a",
-                        "TenantDomain":  "4ba28e96-6fb2-FFFF-FFFF-193a55ea197a",
-                        "AccountId":  "xxxx",
-                        "AccessToken":  ""
-                    }
-                ],
-    "Apps":  [
-                 {
-                     "CredentialType":  "Password",
-                     "Name":  "AAdXTenantAuth-ClientPwd",
-                     "Tenant":  "Client",
-                     "AppId":  "d8fd2d3a-aa53-AAAA-FFFF-22b73e85bd3c",
-                     "ObjectId":  "7f7fc822-AAAA-FFFF-8821-e8363491e90c",
-                     "TenantDomain":  "4ba28e96-6fb2-FFFF-FFFF-193a55ea197a",
-
-                     "App":  null,
-                     "KeyId":  null,
-                     "KeyValue":  "some encrypted password",
-                     "CertificateThumbprint":  null,
-                     "TargetSPObjectId":  "3bc9f48d-AAAA-FFFF-94c7-46d0ca949f72"
-                 },
-                 {
-                     "CredentialType":  "Certificate",
-                     "Name":  "AAdXTenantAuth-ClientCert",
-                     "Tenant":  "Client",
-                     "AppId":  "3b1345e4-156c-4932-84c9-e4fe6c3716dc",
-                     "ObjectId":  "3536293c-7133-AAAA-FFFF-511a3a730220",
-                     "TenantId":  "4ba28e96-6fb2-AAAA-FFFF-193a55ea197a",
-                     "App":  null,
-                     "KeyId":  "57b9c464-cc8a-AAAA-FFFF-e0d71f8bcbc0",
-                     "KeyValue":  null,
-                     "CertificateThumbprint":  "DA6086BF883DACC3A23B3DF50515168A1F540503",
-                     "TargetSPObjectId":  "d049573f-e8a6-AAAA-FFFF-4fcb620af23b"
-                 },
-                 {
-                     "Name":  "AAdXTenantAuth-Server",
-                     "Tenant":  "Server",
-                     "AppId":  "1ab39cb0-25b5-4c3c-bfff-12b7b039a7ca",
-                     "ObjectId":  "efffa692-AAAA-FFFF-92af-0e8ef42b1aee",
-                     "TenantId":  "d1d92357-0fd1-4f9dAAAA-FFFF-a2bf3d687614",
-                     "App":  null,
-                     "TargetSPObjectId":  "392b5f93-AAAA-FFFF-a96d-41cbc8c375d4"
-                 }
-             ]
+  "Tenants": [
+    {
+      "Name": "Server",
+      "CredentialType": "Certificate",
+      "TenantId": "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+      "CertificateThumbprint": "9E8CAA14466AC93D09F2E9474A9CAC087E472192",
+      "CredentialAppId": "6b50fb98-4af8-4f5e-81b4-a0fc2da0c99d"
+    },
+    {
+      "Name": "Client",
+      "CredentialType": "Certificate",
+      "TenantId": "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+      "CertificateThumbprint": "9E8CAA14466AC93D09F2E9474A9CAC087E472192",
+      "CredentialAppId": "6b50fb98-4af8-4f5e-81b4-a0fc2da0c99d"
+    }
+  ],
+  "Apps": [
+    {
+      "CredentialType": "Password",
+      "Tenant": "Client",
+      "Name": "AAdXTenantAuth-ClientPwd"
+    },
+    {
+      "CredentialType": "Certificate",
+      "Tenant": "Client",
+      "Name": "AAdXTenantAuth-ClientCert"
+    },
+    {
+      "Name": "AAdXTenantAuth-Server",
+      "Tenant": "Server"
+    }
+  ]
 }

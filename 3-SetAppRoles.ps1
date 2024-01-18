@@ -10,24 +10,24 @@ $currentpath=[System.IO.Path]::GetDirectoryName($script:myinvocation.MyCommand.D
 
 select-adtenant Server
 $conf.Apps|?{$_.Tenant -eq "Server"} |%{
-    $serversp = Get-AzureADServicePrincipal -ObjectId $_.TargetSPObjectId
+    
+    $serversp = Get-AADServicePrincipal -Filter "AppId eq '$($_.AppId)'"
     ## checking it locked against non approles
-    Set-AzureADServicePrincipal -ObjectId $serversp.ObjectId -AppRoleAssignmentRequired $true 
+    Set-AADServicePrincipal -ObjectId $serversp.ObjectId -AppRoleAssignmentRequired $true 
 }
 
 
 $conf.Apps|?{$_.Tenant -eq "Client"} |%{
     $clientappdef=$_
     write-host "creating service principal in target tenant for client app if not exists"
-    $clientsp=get-AzureADServicePrincipal -ObjectId $_.TargetSPObjectId
+    $clientsp=get-AADServicePrincipal -Filter "AppId eq '$($clientappdef.AppId)'"
     if ($clientsp) {
         $clientappdef | Add-Member -NotePropertyName TargetSPObjectId  -NotePropertyValue $clientsp.ObjectId -ErrorAction SilentlyContinue -force 
         write-host "assigning app role to client app $($clientsp.objectid )in target tenant for app $($serversp.objectid) if not assigned"
-        $ass = Get-AzureADServiceAppRoleAssignment -ObjectId $clientsp.ObjectId -All $true |?{$_.ResourceId -eq $serversp.objectId}
-        if (!$ass){
-	
-            $ass=New-AzureADServiceAppRoleAssignment -objectid $clientsp.ObjectId -principalid $clientsp.ObjectId -resourceid $serversp.ObjectId -Id $serversp.AppRoles[0].id
-        }
+
+        Update-AADSPRoleAssignement -clientsp $clientsp -serversp $serversp -AppRoleId $serversp.AppRoles[0].id
+
+
     }
     else {
         write-host "could not find client app in tenant source $((Get-AzureADTenantDetail).objectid)"

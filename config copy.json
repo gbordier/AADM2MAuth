@@ -1,0 +1,57 @@
+{
+  "Tenants": [
+    {
+      "Name": "Server",
+      "CredentialType": "AccessToken",
+      "TenantId": "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+      "TenantDomain": "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+      "AccountId": "gbordier@microsoft.com"
+    },
+    {
+      "Name": "Client",
+      "CredentialType": "AccessToken",
+      "TenantId": "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+      "TenantDomain": "totototo.onmicrosoft.com",
+      "AccountId": "gbordier@microsoft.com",
+      "AccessToken": "AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAA6hkV3R5DbUOrdo6IpCbMowAAAAACAAAAAAAQZgAAAAEAACAAAAC04MxEBlNFQ30urirQRTCkeZJsFjgXcOz9FZ1sNAs//AAAAAAOgAAAAAIAACAAAACjkk6zNLkbdLI/O1lv12XKc4dAFoiRYU+/f4vIuxjbLsAHAACWLx6J8rqAew/qi6xN8NeafIU8HAYnrN5S5lqeb/2r8PKANVpiApUvtyYQKctb9bqyWOQp0XrqKS5dhfkcww84LcjNxSt4MhUMt6+/Wyf/L3nxDKyEa/QQlifZ/Ev950HS5sJuh9nnCVny2MUCcS00k7+QBPCSQMSZFtkcW62ECmbvd9XahXgxFMTxrtbUh65Ymde5ex1HBBL70FGuZntIQwg6RsNSoujATP03bHVycK+akuk6A1AKKU5Q+FTChbZXiB2oDkPzXHJDKgAKKl76r8XPtdgDFQ9OINqYM9qbsR8/oxQeeHKaHJDH3mLoY/WjicxG0ET0kl+StM15Tgu+puLt0zU3rwKj4VuY7LHwBrooVHChaREk1rQg+7SHf/N8tKHCFSlz33MpGmue3MnOBWtICaJl7+C94lIEjsY8qBdcKHYCENu2lyFEg/Gwsnakb4cf9eeqxt+DssJ6ZEXHRhVeR9ub37ynFthhjDWkrrFXZlunEGiCducEgVFw98vl5gABkNtrEI04b65pkUweBoCd8PKdNDJzjhLoyW2I2vvbW1eZm6g0iZvdPa+9HIqfPulSgPRT2IYJwMoVnamFx0Y1++CWroltV2HOjzGJr+NoVI+CQk37tTqmz+trBJlt6hwJdB3bDXPqhEaUAwtxd7ZSpBSAHSPjcVTbdclx+MqYUNWMMoPGr5TAWLZ4oTV1jSXdNqGaBn23uN46gGJdvZhaZrlIibu3plDTvkU7kMsx1hJdiAYH9i7hprqHg1TIeU9/TAOJ9XFZEXc/HvoFt1E+x5EjryuGY6JCNHYvs2du1gtzuY2ss38y25rHoOoVdDRE/u/2aYYwAAO6LJV1CgrnvfoVJC/o1rMjW8gSxZzpmfFflDsHqMyP0mPGLF5ixRe202I5+1hjanbLQHgOYSXJdIa5ON76vhlUbz0nzNOxV9eCBuNOrS5n73SPYhLvPKK6Dq5I1g02LvZ0noQW8eokxIknHEzmAatzWJab28VZS/6LSU9qbNtyBDDe9U/0TqhjoLS7m62PIDtWYmONkyv7R1yLqJsehi/CAPWIwww5aAyOb2rZP/KH0muIJo0MrJybmCwGvtJ+Dm3iq69/+GTNHsYD+OIgraPyOW5XDokwdQN+y0rwCqh4YkX/0J/J+nJHH72nNyjnRqGjRw6KMTq/t7MITy3WKEk3e+9JLvLV0a56QFDA4QPTzrICaMnw/7l4fSe2vU6ySDRvJgtuhLgOcWo4N/VFHvQ9ghP9dus+EcZ/lZXR+vB0348SxIz/9cQ2NniZngxIf9BvRRGBeuQOWe71I8JPouA2g3hbwrsCYlWwq/kPkt/wAFKY1m/6JNp3lRqjVAPM7H5pumwKPXti4yopIX3mDSTsPgCMKsHN736yqBiTzn7GnJXR/nAxU3eORvE/xheTuoegKiK3X8PQCGO3jlHcvSrqrF+TGNtgNdN3MZCLcVJtZbu+3YsfdzxN3UWMZnY8zOc1cpK9v8VMQdgPDQIEfYbR6TQi83TeITxRZFdgRHWt6nK65asp9/3htTAmOuiy3XmZfIcWlrw0Oioo1iHghsaYP2un1Q8rbAA4RPZOLCppJJWwfFBUJVh5XXz0C+LwtTd3vNHb+sq4cut7Ska9GIVbVDN+2btGL3+cH7UXKUIGPE8ppAFjiOUdph7elItVdYY/E7o8kPt+QGOIJ2vvyiAbS45vlkmaC4V4BIZElfkXfisUXoZi/lPGJldRwEYKr20Otc+Wqtvsew2gQ36o3xB3TK1zJQiPrN9+wDE/wGwJ4I/+Vebew/AReU2cl3KnVw+RYSbi773NrXRqeLdrnWsWcp9MG5YkbD4Pg9zC25L8ckmcjFYfcR1TReF7/o0VGd9hHAE/JXhbM9sKqumGyyUJ3b4lckfQpVgJk2CH7VL3r3583XFmUdjIM6w7VdCf6uhFWIU5X4xiRwbNWP4csDDwdDkIzeuJNMaBe6l9YYDIPOqR/d6ypU2yVUM8h34/QEiVIx8/mhxN1hPI03PWMAYz+CRVsDDZlC4tE8CYkmTQBOVMw8Paz/HcAqxSdK//xkmHcW7ls3r6WnJl8uf8za0IJNew884/zOH7+55/fggCtVn/kKn5L58Pl4E67NIwh/RLnRNCDl2yfeIbpPKYT6qJUhZU/zlVwbl3xzyScma13zQN+yrMHHzf7EgrLjqF2qx/sFDoO14soPSbRLNDJcbnKLvcV2sQyaOvVWIub53lINZneBGXZZv/CShc3fLXuOltFNmC6OtK19ra6xFIWgsV+CtRDyQVFmkWWXE7z7is3JstdCE8pk+hnac+RTBIRjU9Yu4hJr0xwsaRsng5nORlqoJmu9i+1S04XabjGXgEPWiejmRbmXZ/WbeZWuJSO+wukZURDkbz0d/uvjIOuh2TYt3IfAkPEacqJ+o71bEt7VCHq06G8DO49WI9pHoFti1HH1CRlVa9N8zroXhGukxwsMBxRocQNS/UrGYBlWv56zdFEiuYliHGXKJ0LESkCmkDOCQDTCJCeqobmqrYXqOQQ6ZJdN5MtDqeCa0CVDrWfZiJcrnyHy3FGZEleKKI5AHRZiUT3yt3WInT3neaBAFrX7rCMLSItVJOO2Br1anesD3l3MOzmxyrFWWd1yftYF983EfPQAAAAAUQCdoB6zE/ncvZNX/tVmHC1zAE0Njr2g780FOPbsphSW+860557SKH9/cgY0SGA2Opjobs44pQEgJkA6QHMjw=",
+      "AccessTokenExpiration": "2024-01-13T15:18:41.687Z"
+    }
+  ],
+  "Apps": [
+    {
+      "CredentialType": "Password",
+      "Name": "AAdXTenantAuth-ClientPwd",
+      "Tenant": "Client",
+      "AppId": "d8fd2d3a-aa53-4ab1-b747-22b73e85bd3c",
+      "ObjectId": "7f7fc822-6377-4550-8821-e8363491e90c",
+      "TenantId": "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+      "App": null,
+      "KeyId": null,
+      "KeyValue": "AQAAANCMnd8BFdERjHoAwE/Cl+sBAAAAkci4Uu5n/E6vzViaY7Q0DgAAAAACAAAAAAAQZgAAAAEAACAAAAAOnePXn9S4S/7YLW7KgtHJZcQbGDly+eXu1FpVVTW15AAAAAAOgAAAAAIAACAAAADX0mQhY5Q02TYB/nlL12F0LT4PiV/qsGQUMw08dThRcTAAAAANfGl8CSSK2QBanBrOJHdIbRF9FifzMwSh5viNlYNILTGsGEh6uOhqv4dbr0P/su9AAAAAse0jj4D/B3zEN7ErpWsX3OI1ulaZ2LKFitZw28CRqLeIONkTR/IjBTNROuXGYg9qqbBSMmkC9A3QmoBXwsxBiw==",
+      "CertificateThumbprint": null,
+      "TargetSPObjectId": "3bc9f48d-e370-470c-94c7-46d0ca949f72"
+    },
+    {
+      "CredentialType": "Certificate",
+      "Name": "AAdXTenantAuth-ClientCert",
+      "Tenant": "Client",
+      "AppId": "3b1345e4-156c-4932-84c9-e4fe6c3716dc",
+      "ObjectId": "3536293c-7133-40e2-bc8f-511a3a730220",
+      "TenantId": "4ba28e96-6fb2-4d67-b2ab-193a55ea197a",
+      "App": null,
+      "KeyId": "ad1618b9-3cfc-4d99-91e7-8d25363206fb",
+      "KeyValue": null,
+      "CertificateThumbprint": "DA6086BC883DACC3A23B3DF50515168A1F540503",
+      "TargetSPObjectId": "d049573f-e8a6-4eba-9927-4fcb620af23b"
+    },
+    {
+      "Name": "AAdXTenantAuth-Server",
+      "Tenant": "Server",
+      "AppId": "1ab39cb0-25b5-4c3c-bfff-12b7b039a7ca",
+      "ObjectId": "efffa692-b9bc-4d52-92af-0e8ef42b1aee",
+      "TenantId": "d1d92357-0fd1-4f9d-853e-a2bf3d687614",
+      "App": null,
+      "TargetSPObjectId": "392b5f93-ef50-403a-a96d-41cbc8c375d4"
+    }
+  ]
+}

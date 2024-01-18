@@ -235,14 +235,67 @@ $token=get-msaltoken -ClientId $clientappID -TenantId <ProviderTenantID> -certif
 the token then includes the appidacr claim  which indicates that the token has been issued with a certificate.
 This claim can take 2 values 1 for a password and 2 for a certificate.
 
-
-
 final step is to use this token to call the Server App in the Provider Tenant.
 
 ``` powershell
 invoke-restmethod -Method Get -Uri https://localhost:5001/api/values -Headers @{Authorization = "Bearer $($token.AccessToken)"}
 
 ```
+
+# Let's add and API Manager into the Mix
+
+Azure API Manager can also validate that JWT token, below is the validation using the "**validate-azure-ad-token**" policy documented here [https://learn.microsoft.com/en-us/azure/api-management/validate-azure-ad-token-policy]
+
+![](./img/APIM.png)
+
+The Hello API points back to the flask app in this [repo](./validate_token_python)
+
+
+
+``` xml
+<policies>
+    <inbound>
+        <base />
+        <validate-azure-ad-token 
+        tenant-id="d1d92357-0fd1-4f9d-853e-a2bf3d687614" failed-validation-error-message="bad nasty token">
+          <client-application-ids>
+              <application-id>824fa74a-f2de-4f9c-90d6-07c7b76dd29e</application-id>
+          </client-application-ids>
+          <audiences>
+              <audience>8db83c99-524f-4036-8db7-4ea3d5101f25</audience>
+          </audiences>
+          <required-claims>
+              <claim name="appidacr" match="all" separator=",">
+                  <value>2</value>
+              </claim>
+              <claim name="roles" match="any" separator=",">
+                  <value>Role1</value>
+                  <value>Role2</value>
+              </claim>
+          </required-claims>
+        </validate-azure-ad-token>
+    </inbound>
+    <backend>
+        <base />
+    </backend>
+    <outbound>
+        <base />
+    </outbound>
+    <on-error>
+        <base />
+    </on-error>
+</policies>
+
+```
+
+
+note that:
+ - the "audience" claim here is the server app
+ - "client application ids" must include the expected client ids
+ - the "**roles**" claim represent the allowed roles
+ - to enforce certificate authentication for the  client the "**appidacr**" claim must be 2 for a certificate and 1 for a password
+
+![](./img/APIM-XML.png)
 
 # Conclusion
 

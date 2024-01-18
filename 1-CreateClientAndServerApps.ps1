@@ -5,7 +5,7 @@ $currentpath=[System.IO.Path]::GetDirectoryName($script:myinvocation.MyCommand.D
 . $currentpath\0-vars.ps1
 
 
-function retrieveorcreateapp($appdef,[switch]$multiTenant) {
+function RetrieveorcreateappWin($appdef,[switch]$multiTenant) {
     if ($appdef.AppId) {
         $app=Get-AzureADApplication -Filter "AppId eq '$($appdef.AppId)'"    
     
@@ -35,7 +35,10 @@ function retrieveorcreateapp($appdef,[switch]$multiTenant) {
 }
 
 
-function CreateSecret($app) {
+
+
+
+function CreateSecretWin($app) {
     "KeyId","KeyValue","CertificateThumbprint" |%{
         $app | Add-Member -NotePropertyName $_   -NotePropertyValue $null -ErrorAction SilentlyContinue
     }
@@ -85,12 +88,18 @@ function CreateSecret($app) {
         if ($secret)
         {
             $app.KeyId = $secret.KeyId        
-            $app.KeyValue= (EncryptToken $secret.Value )
+            ##$app.KeyValue= (EncryptToken $secret.Value )
+            $app.KeyValue = (EncryptToken $secret.Value) 
         }   
         
         
     }
 }
+
+
+
+
+
 
 select-adtenant Server
 $serverappdef= $conf.Apps|?{$_.Tenant -eq "Server"}
@@ -102,7 +111,7 @@ if ($serverapp) {
     {
         $AppRoles=@( [PSCustomObject]@{
         
-            
+                
                 "AllowedMemberTypes"= @(
                     "Application"
                 )
@@ -125,20 +134,21 @@ if ($serverapp) {
             }
         )
         write-host "adding default roles to server application"
-	 Set-AzureADApplication -objectid  $serverapp.objectid  -AppRoles $AppRoles 
+#	    Set-AzureADApplication -objectid  $serverapp.objectid  -AppRoles $AppRoles 
+        Set-AADApplication -objectid $serverapp.objectId -AppRoles $AppRoles
     }
 }
 
 select-adtenant Client
 $conf.Apps|?{$_.Tenant -eq "Client"} |%{
     $clientappdef=$_
-    write-host "creating or retrieving application $($clientappdef.Name) from Source tenant $((Get-AzureADTenantDetail).ObjectId)"
+    write-host "creating or retrieving application $($clientappdef.Name) from Source tenant $((Get-AADTenantDetails).ObjectId)"
     $clientapp = retrieveorcreateapp -Appdef $clientappdef -multiTenant
     if ($clientapp) {
         CreateSecret -app $clientappdef | out-null
     }
     else {
-        write-host "could not find client app in tenant source $(Get-AzureADTenantDetail)"
+        write-host "could not find client app in tenant source $(Get-AADTenantDetails)"
     }
 }
 

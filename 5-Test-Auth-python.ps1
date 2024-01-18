@@ -1,4 +1,4 @@
-Param ($serveruri="http://localhost:5000")
+Param ($serveruri="http://localhost:5000" , [switch] $nobearer)
 $currentpath=[System.IO.Path]::GetDirectoryName($script:myinvocation.MyCommand.Definition)
 
 ## reload previous step output
@@ -15,20 +15,35 @@ $conf.Apps|?{$_.Tenant -eq "Client" } |%{
     try {
   if ($clientappdef.CredentialType -eq "Password"){
     write-host "retrieving a token for $($clientappdef.name) in target tenant with password"
-    $token=  get-MsalToken -ClientSecret ( ConvertTo-SecureString -AsPlainText -Force (DecryptToken $clientappdef.KeyValue)) -ClientId $clientappdef.AppId -TenantId $serverapp.tenantid  -Scopes "$($serverapp.AppId)/.default"
+    if ($PSVersionTable.Platform -eq "Unix"){
+      $secret = DecryptUnix -blob $clientappdef.KeyValue
+    }else{
+      $secret = DecryptWin -blob $clientappdef.KeyValue
+    }
+
+    $token=  get-MsalToken -ClientSecret   (ConvertTo-SecureString  -String $secret -AsPlainText -Force )  -ClientId $clientappdef.AppId -TenantId $serverapp.tenantid  -Scopes "$($serverapp.AppId)/.default"
+    
   write-host "showing token payload for app secret "
   (Decode-JWT -token $token.AccessToken -token_type access_token).payload
   }
   if ($clientappdef.CredentialType -eq "Certificate"){
     write-host "retrieving a token for $($clientappdef.name) in target tenant with certificate $($clientappdef.CertificateThumbprint)"
-    $token=get-MsalToken  -ClientCertificate (dir (join-path "Cert:\CurrentUser\my" $clientappdef.CertificateThumbprint)) -ClientId $clientappdef.AppId -TenantId $serverapp.tenantid  -Scopes "$($serverapp.AppId)/.default"
+    $cert=  GetCertificateFromStore -Thumbprint $clientappdef.CertificateThumbprint
+    $token=get-MsalToken  -ClientCertificate $cert  -ClientId $clientappdef.AppId -TenantId $serverapp.tenantid  -Scopes "$($serverapp.AppId)/.default"
   }
   write-host "testing token payload with local python app use ./run_local.sh to start the app "
-(curl -H @{"Authorization"= "Bearer $($token.accesstoken)" } -uri "$serveruri/hello").Content
+
+$authorization="Bearer $($token.accesstoken)"
+if ($nobearer) {$authorization="$($token.accesstoken)" }
+
+write-host "using authorization header :$authorization"
+
+(invoke-webrequest -Headers @{"Authorization"= $authorization } -uri "$serveruri/hello").Content
     }
 
 catch {
-  write-host "error $($error[0].exception.message) retrieving token for $($clientappdef.name) in target tenant"
+  write-host "error $($error[0].exception.message) submitting token for $($clientappdef.name) to $serveruri in target tenant"
+  write-host "error $($error[0]| out-string ) "
 }
 
 
