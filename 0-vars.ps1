@@ -452,7 +452,7 @@ function new-aadappcertcredential ($cert,$app)
 {
     if ($PSVersionTable.PSEdition -eq "Core")
     {
-        $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject} | select -First 1
+        $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject -and [System.Convert]::ToBase64String( $_.CustomKeyIdentifier) -eq [System.Convert]::ToBase64String($cert.GetCertHash()) } | select -First 1
         if (!$secret) {
             $null= New-AzADAppCredential -ObjectId $app.ObjectId -CustomKeyIdentifier ( [System.Convert]::ToBase64String( $cert.GetCertHash())) -CertValue ([System.convert]::ToBase64String($cert.RawData)) -StartDate (get-date).AddDays(-1) -EndDate $cert.NotAfter
             $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject} | select -First 1
