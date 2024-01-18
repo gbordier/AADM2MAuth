@@ -19,11 +19,13 @@
         },
 
         "onCreateCommand":[
-            "sudo apt update ; sudo apt install powershell -y",
+            "sudo apt update",
+            "sudo apt install powershell -y",
             "pwsh -command install-module -force  az.resources,MSAL.PS",
             "pip install ipykernel jupyter powershell_kernel",
             "python -m powershell_kernel.install --powershell-command pwsh",
-            "cd ./validate_token_python ; pip install -r ./requirements.txt"
+            "cd ./validate_token_python",
+            "pip install -r ./requirements.txt"
         ]
 
 }
