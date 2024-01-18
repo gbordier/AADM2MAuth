@@ -726,7 +726,7 @@ function CreateSecret($app) {
             $app.KeyId = $secret.KeyId
         }
     }
-    }
+    
     if ($app.credentialtype -eq "Password" -and (-not $app.KeyId -or -not $app.keyvalue)) {
         
         CleanAndCreateaadcredential -app $app        
