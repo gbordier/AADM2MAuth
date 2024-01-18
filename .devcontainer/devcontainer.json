@@ -1,0 +1,29 @@
+{
+    "image" : "mcr.microsoft.com/devcontainers/python:3.10",
+
+         "customizations": {
+            "vscode": {
+                "settings": {
+                    "go.toolsManagement.checkForUpdates": "local",
+                    "theme": "vs-dark",
+                },
+                "extensions": [
+                        "GitHub.vscode-pull-request-github",
+                        "ms-python.python",
+                        "ms-python.vscode-pylance",
+                        "ms-toolsai.jupyter",
+                        "ms-vscode.powershell"
+                    ]
+
+            }
+        },
+
+        "onCreateCommand":[
+            "sudo apt update ; sudo apt install powershell -y",
+            "pwsh -command install-module -force  az.resources,MSAL.PS",
+            "pip install ipykernel jupyter powershell_kernel",
+            "python -m powershell_kernel.install --powershell-command pwsh",
+            "cd ./validate_token_python ; pip install -r ./requirements.txt"
+        ]
+
+}
