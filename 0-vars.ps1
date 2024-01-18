@@ -127,13 +127,13 @@ Function EncryptWin($text)
 
 function EncryptUnix($text)
 {
-    $cert=GetCertificateFromStore -Name "CN=localhost" 
+    $cert=GetCertificateFromStoreOrCreateSelfSigned -Name "CN=localhost" 
     $blob=[System.Convert]::ToBase64String($cert.PublicKey.Key.Encrypt( [System.Text.Encoding]::ASCII.GetBytes($text) , [System.Security.Cryptography.RSAEncryptionPadding]::Pkcs1) )
     return $blob
 }
 function DecryptUnix($blob)
 {
-    $cert=GetCertificateFromStore -Name "CN=localhost" 
+    $cert=GetCertificateFromStoreOrCreateSelfSigned -Name "CN=localhost" 
     $text=[System.Text.Encoding]::ASCII.GetString( $cert.PrivateKey.Decrypt( [System.Convert]::FromBase64String($blob) , [System.Security.Cryptography.RSAEncryptionPadding]::Pkcs1))
     return $text
 }
@@ -278,6 +278,15 @@ function ListCertificatesFromStore()
         }
     }
     return $certs
+}
+
+function GetCertificateFromStoreOrCreateSelfSigned($Subject)
+{
+    $cert=GetCertificateFromStore -Name $Subject
+    if (!$cert) {
+        $cert=CreateSelfSignedCertificate -subject $Subject 
+    }
+    return $cert
 }
 
 function GetCertificateFromStore (
