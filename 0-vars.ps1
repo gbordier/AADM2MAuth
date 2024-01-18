@@ -1,4 +1,6 @@
-install-module msal.ps
+install-module msal.ps , az-resources -Confirm:$false -Force  -Scope CurrentUser
+import-module ./JWT
+
 $q=$($script:myinvocation)
  if ($q.CommandOrigin -ne "Internal"  )
  {
@@ -454,8 +456,9 @@ function new-aadappcertcredential ($cert,$app)
     {
         $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject -and [System.Convert]::ToBase64String( $_.CustomKeyIdentifier) -eq [System.Convert]::ToBase64String($cert.GetCertHash()) } | select -First 1
         if (!$secret) {
+            write-host "could not find a credential for certificate $($cert.Subject) with $($cert.thumbprint) adding one"
             $null= New-AzADAppCredential -ObjectId $app.ObjectId -CustomKeyIdentifier ( [System.Convert]::ToBase64String( $cert.GetCertHash())) -CertValue ([System.convert]::ToBase64String($cert.RawData)) -StartDate (get-date).AddDays(-1) -EndDate $cert.NotAfter
-            $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject} | select -First 1
+            $secret=Get-AzADAppCredential -ObjectId $app.ObjectId | ?{$_.Type -eq "AsymmetricX509Cert"  -and $_.DisplayName -eq $cert.Subject -and [System.Convert]::ToBase64String( $_.CustomKeyIdentifier) -eq [System.Convert]::ToBase64String($cert.GetCertHash()) } | select -First 1
         }
     }
     else {
