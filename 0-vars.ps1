@@ -679,47 +679,53 @@ function CreateSecret($app) {
     "KeyId","KeyValue","CertificateThumbprint" |%{
         $app | Add-Member -NotePropertyName $_   -NotePropertyValue $null -ErrorAction SilentlyContinue
     }
-    if ($app.credentialtype -eq "Certificate" -and  $app.CertificateThumbprint)
-	{   
-        $cert=GetCertificateFromStore -thumbprint $app.CertificateThumbprint
-        write-host "checkinf if certificate $($app.certificatethumbprint) is present in store"
+    if ($app.credentialtype -eq "Certificate" )
+    {
+        if (  $app.CertificateThumbprint)
+	    {   
+            $cert=GetCertificateFromStore -thumbprint $app.CertificateThumbprint
+            write-host "checkinf if certificate $($app.certificatethumbprint) is present in store"
 
-        if (!$cert) { 
-            write-host "certificate not found locally " 
-            $app.CertificateThumbprint = $null 
-        }
-    }
-
-    if ($app.credentialtype -eq "Certificate" -and -not $app.CertificateThumbprint) {
-        if ($PSVersionTable.Platform -ne "Unix") {
-            foreach ($cert in  (dir Cert:\CurrentUser\my |?{$_.subject -eq $app.Name -and !$_.HasPrivateKey}) ){
-                remove-item $_ -Force -Confirm:$false
+            if (!$cert) { 
+                write-host "certificate not found locally " 
+                $app.CertificateThumbprint = $null 
+            }
+            else {
+                write-host "certificate found locally " 
+                
             }
         }
-        $cert = GetCertificateFromStore -name "CN=$($app.Name)" | select -First 1
-            
-        if (!$cert ) {
-	        write-host "creating cert with Microsoft Enhanced RSA and AES Cryptographic Provider"
-            $cert=CreateSelfSignedCertificate -subject "CN=$($app.Name)"
-            try {
-                write-host "checking we can sign data with sha256 for this certificate"
-                $sig=$cert.PrivateKey.SignData(([byte] "1","2"), [System.Security.Cryptography.HashAlgorithmName]::SHA256, [System.Security.Cryptography.RSASignaturePadding]::Pkcs1)
-            }
-            catch {
-                write-host "cannot sigh with sha256 , trying sha1 or change certificate provider"
-                exit
-            }
-	        write-host "cert created with thumbprint $($cert.thumbprint)"
-        }
-	    else { write-host "found existing cert "}
-        ## upload certificate and set customkeyid as the certificate thumbprint
 
+        if (-not $app.CertificateThumbprint) {
+            if ($PSVersionTable.Platform -ne "Unix") {
+                foreach ($cert in  (dir Cert:\CurrentUser\my |?{$_.subject -eq $app.Name -and !$_.HasPrivateKey}) ){
+                    remove-item $_ -Force -Confirm:$false
+                }
+            }
+            $cert = GetCertificateFromStore -name "CN=$($app.Name)" | select -First 1
+                
+            if (!$cert ) {
+                write-host "creating cert with Microsoft Enhanced RSA and AES Cryptographic Provider"
+                $cert=CreateSelfSignedCertificate -subject "CN=$($app.Name)"
+                try {
+                    write-host "checking we can sign data with sha256 for this certificate"
+                    $sig=$cert.PrivateKey.SignData(([byte] "1","2"), [System.Security.Cryptography.HashAlgorithmName]::SHA256, [System.Security.Cryptography.RSASignaturePadding]::Pkcs1)
+                }
+                catch {
+                    write-host "cannot sigh with sha256 , trying sha1 or change certificate provider"
+                    exit
+                }
+                write-host "cert created with thumbprint $($cert.thumbprint)"
+            }
+            else { write-host "found existing cert "}
+            ## upload certificate and set customkeyid as the certificate thumbprint
+        }
         $secret=new-aadappcertcredential -app $app -cert $cert
         if ($secret) {
             $app.CertificateThumbprint = $cert.Thumbprint
             $app.KeyId = $secret.KeyId
         }
-
+    }
     }
     if ($app.credentialtype -eq "Password" -and (-not $app.KeyId -or -not $app.keyvalue)) {
         
