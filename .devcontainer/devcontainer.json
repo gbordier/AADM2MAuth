@@ -26,9 +26,9 @@
             //"sudo apt update",
             //"sudo apt install -y powershell",
             "pip": "pip install ipykernel jupyter powershell_kernel",
-            "pwsh": "pwsh -command install-module -force  az.resources,MSAL.PS"
+            "pwsh": "pwsh -command install-module -force  az.resources,MSAL.PS",
             //"python" : "python -m powershell_kernel.install --powershell-command pwsh"
-            //"cd ./validate_token_python pip install -r ./requirements.txt"
+            "prep python": "cd ./validate_token_python pip install -r ./requirements.txt"
         }
 
 }
