@@ -1,4 +1,4 @@
-install-module msal.ps , az-resources -Confirm:$false -Force  -Scope CurrentUser
+install-module msal.ps , az.resources -Confirm:$false  -Scope CurrentUser
 import-module ./JWT
 
 $q=$($script:myinvocation)
@@ -46,6 +46,7 @@ if (!$conf)
 
 }
 
+
 <#
 .SYNOPSIS
 Load administrative Credentials to connect to AAD
@@ -80,42 +81,78 @@ function Load-Credentials($conf)
             $YN=Read-Host "is there a Certificate and AppId to connect to $($tenant.Name) [$($tenant.TenantId)] [Y/N]" 
             if ($YN -eq "Y") {
                 $AppId=Read-Host "Enter AppId linked to certificate to connect to $($tenant.Name)" 
+                $tenant.CredentialType="Certificate"
+                $tenant.CredentialAppId = $appid
+            }
+        }
+        if ($tenant.CredentialType -eq "Certificate"  -and $tenant.CertificateThumbprint -and $tenant.CredentialAppId)
+        {
+           $cert =GetCertificateFromStore -Thumbprint $tenant.CertificateThumbprint
+           $appid = $tenant.CredentialAppId
+        }
+        if (!$cert) {
+
+        
                 $CertPath=read-host "Enter Certificate Path to connect to $($tenant.Name)"
                 if ($AppId -and $CertPath -and (test-path $certPath))
                 {
                     $cert=Get-PfxCertificate -FilePath $CertPath
+                    write-host "certificate loaded"
 
                 }
-                if ($cert -and $cert.HasPrivateKey) {
+        }
+        
+        if ($cert -and $cert.HasPrivateKey -and $tenant.CredentialAppId) {
 
-                    write-host "testing connection with appid $appid and certificate $($cert.thumbprint) and authority https://login.microsoftonline.com/$($tenant.TenantId)"                    
-                    $tok=Get-MsalToken  -ClientId $appid  -ClientCertificate $cert  -Authority "https://login.microsoftonline.com/$($tenant.TenantId)"
-                    if ($tok){
-                        $tenant | Add-Member -NotePropertyName CertificateThumbprint   $cert.Thumbprint -ErrorAction SilentlyContinue 
-                        # use X509 store to persist cetificate instead of config file
-                        #                        $tenant | Add-Member -NotePropertyName Certificate   [System.Convert]::ToBase64String($cert) -ErrorAction SilentlyContinue 
-                        $tenant | Add-Member -NotePropertyName CredentialAppId   $AppId -ErrorAction SilentlyContinue 
+            write-host "testing connection with appid $($tenant.CredentialAppId) and certificate $($cert.thumbprint) and authority https://login.microsoftonline.com/$($tenant.TenantId)"                    
+            $tok=Get-MsalToken  -ClientId $appid  -ClientCertificate $cert  -Authority "https://login.microsoftonline.com/$($tenant.TenantId)"
+            if ($tok){
+                $tenant | Add-Member -NotePropertyName CertificateThumbprint   $cert.Thumbprint -ErrorAction SilentlyContinue 
+                # use X509 store to persist cetificate instead of config file
+                #                        $tenant | Add-Member -NotePropertyName Certificate   [System.Convert]::ToBase64String($cert) -ErrorAction SilentlyContinue 
+                $tenant | Add-Member -NotePropertyName CredentialAppId   $AppId -ErrorAction SilentlyContinue 
 
-                        $tenant.CredentialType="Certificate"
-                        $storeName = [System.Security.Cryptography.X509Certificates.StoreName]::My
-                        $storeLocation = [System.Security.Cryptography.X509Certificates.StoreLocation]::CurrentUser
-                        $store = [System.Security.Cryptography.X509Certificates.X509Store]::new($storeName, $storeLocation)
-                        $store.Open("ReadWrite")
-                        $store.Add($cert)
-                    }
-                    else {
-                        write-host "could not get access token from certificate $($cert.thumbprint) and appid $appid"
-                        throw
-                    }
-                }
-
+                $tenant.CredentialType="Certificate"
+                $storeName = [System.Security.Cryptography.X509Certificates.StoreName]::My
+                $storeLocation = [System.Security.Cryptography.X509Certificates.StoreLocation]::CurrentUser
+                $store = [System.Security.Cryptography.X509Certificates.X509Store]::new($storeName, $storeLocation)
+                $store.Open("ReadWrite")
+                $store.Add($cert)
+            }
+            else {
+                write-host "could not get access token from certificate $($cert.thumbprint) and appid $appid"
+                throw
             }
         }
+
+            
+        
     }
      
 }
 
 
+function Encrypt($text)
+{
+    if ($PSVersionTable.Platform -ne "Unix")
+    {
+        return EncryptWin -text $text
+    }
+    else {
+        return EncryptUnix -text $text
+    }
+}
+
+function Decrypt($blob)
+{
+    if ($PSVersionTable.Platform -ne "Unix")
+    {
+        return DecryptWin -blob $blob
+    }
+    else {
+        return DecryptUnix -blob $blob
+    }
+}
 
 #region WindowsSpecific
 
@@ -224,7 +261,7 @@ function Connect-AAD($tenant,$devicelogin,[switch] $useaccesstoken)
 
     if ($PSVersionTable.PSEdition -eq "Core")
     {
-        write-host " certauth : $CertAuthAvailable connecting with $($p["ApplicationId"]) and certificate $($p["CertificateThumbprint"])"
+        write-host "connecting with $($p["ApplicationId"]) and certificate $($p["CertificateThumbprint"])"
         $aadconn = Connect-AzAccount @p
         if ($aadconn) {
             $context = Get-AzAccessToken
@@ -467,6 +504,17 @@ function new-aadappcertcredential ($cert,$app)
     return $secret   
 }
 
+function CheckAppCredentials($app)
+{
+    if ($PSVersionTable.PSEdition -eq "Core")
+    {
+        return (Get-AzADAppCredential -ApplicationId $app.appid | ?{$_.keyid -eq $app.KeyId }) -ne $null 
+    }
+    else {
+        return (Get-AzureADApplicationPasswordCredential -ObjectId $app.objectid | ?{$_.keyid -eq $app.KeyId }) -ne $null 
+    }
+}
+
 function CleanAndCreateaadcredential($app)
 {
     if ($PSVersionTable.PSEdition -eq "Core")
@@ -478,16 +526,8 @@ function CleanAndCreateaadcredential($app)
         
         if ($secret)
         {
-            $app.KeyId = $secret.KeyId   
-            if ($PSVersionTable.Platform -ne "Unix")
-            {
-                $app.KeyValue = Encryptwin -text $secret.SecretText
-                
-            }
-            else {
-                
-                $app.KeyValue =  EncryptUnix -text $secret.SecretText
-            }
+            $app.KeyId = $secret.KeyId
+            $app.KeyValue = Encrypt -text $secret.SecretText
         }   
 
     }
@@ -730,6 +770,22 @@ function CreateSecret($app) {
         }
     }
     
+    if ($app.credentialtype -eq "Password" -and  $app.KeyId -and $app.keyvalue)
+    {
+        write-host "checking we can decrypt the password for $($app.KeyId) for app $($app.Name)[$($app.AppId)in config file]"
+        try{
+            Decrypt -blob $app.KeyValue
+        }catch {
+            write-host "could not decrypt content, need to generate a new secret"
+            $key.keyvalue = $null
+        }
+        if (! (CheckAppCredentials -app $app))
+        {
+            $app.KeyId = $null
+            $app.keyvalue=$null
+        }
+
+    }
     if ($app.credentialtype -eq "Password" -and (-not $app.KeyId -or -not $app.keyvalue)) {
         
         CleanAndCreateaadcredential -app $app        

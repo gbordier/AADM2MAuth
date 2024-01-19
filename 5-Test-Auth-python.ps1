@@ -15,11 +15,8 @@ $conf.Apps|?{$_.Tenant -eq "Client" } |%{
     try {
   if ($clientappdef.CredentialType -eq "Password"){
     write-host "retrieving a token for $($clientappdef.name) in target tenant with password"
-    if ($PSVersionTable.Platform -eq "Unix"){
-      $secret = DecryptUnix -blob $clientappdef.KeyValue
-    }else{
-      $secret = DecryptWin -blob $clientappdef.KeyValue
-    }
+    $secret = Decrypt -blob $clientappdef.KeyValue
+    
 
     $token=  get-MsalToken -ClientSecret   (ConvertTo-SecureString  -String $secret -AsPlainText -Force )  -ClientId $clientappdef.AppId -TenantId $serverapp.tenantid  -Scopes "$($serverapp.AppId)/.default"
     
