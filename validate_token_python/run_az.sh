@@ -1,3 +1,4 @@
+#!/bin/sh
 prefix=$(az account show --query "user.name" | cut -d'@'  -f1  | tr -d '\"' )
 location="northeurope"
 az webapp up --runtime PYTHON:3.9 --sku B1 --logs --location $location  --os-type Linux -g ${prefix}_rg_flaskwebapp -n $prefix-flaskwebapp
