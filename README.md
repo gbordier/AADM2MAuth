@@ -1,6 +1,6 @@
 # Azure AD Cross-tenant Machine To Machine (also known as S2S) authentication demo
 
-the full documentation for this pattern is located at []
+the full documentation for this pattern is located [here](./M2MAUTH.md)
 
 The goal for this is to demonstrate how easy it is to authenticate a "Client" daemon/headless application (non-interactive) managed by a client organization into a "Server" API application that is managed in another Organization / Azure AD Tenant.
 
